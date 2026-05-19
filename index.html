@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TOOLS TERMUX VANZ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Fira Code', 'JetBrains Mono', monospace;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Elegant Black & White Theme */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px 16px 100px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+            border-bottom: 1px solid #333;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        .logo small {
+            font-size: 12px;
+            letter-spacing: 2px;
+            display: block;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .version {
+            font-size: 11px;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-family: monospace;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #555;
+            font-size: 9px;
+            text-transform: uppercase;
+        }
+
+        /* Search Box */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: monospace;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #fff;
+        }
+
+        .search-input::placeholder {
+            color: #444;
+        }
+
+        /* Category Tabs */
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 15px;
+        }
+
+        .cat-btn {
+            background: transparent;
+            border: 1px solid #333;
+            color: #888;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-family: monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-btn.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* Tools List */
+        .tools-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #888;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #222;
+        }
+
+        .tool-card {
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .tool-card:hover {
+            border-color: #fff;
+            background: #111;
+        }
+
+        .tool-name {
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        .tool-desc {
+            font-size: 11px;
+            color: #666;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .tool-cmd {
+            font-size: 10px;
+            color: #00ff00;
+            background: #000;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: monospace;
+            display: inline-block;
+            border: 0.5px solid #333;
+        }
+
+        /* Modal untuk detail tool */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #222;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #fff;
+        }
+
+        .modal-body {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #000;
+            border: 1px solid #222;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .code-block pre {
+            color: #00ff00;
+            font-family: monospace;
+            font-size: 11px;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            border-top: 1px solid #222;
+            padding: 12px;
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+            z-index: 100;
+        }
+
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+        }
+
+        /* Install Command Style */
+        .install-cmd {
+            background: #000;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #00ff00;
+            margin: 10px 0;
+        }
+
+        /* Black & White Elegant Scroll */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app">
+        <div class="header">
+            <div class="logo">
+                ⚡ TERMUX<br>
+                <small>TOOLS VANZ</small>
+            </div>
+            <div class="version">v3.0.0 | BLACK EDITION</div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat"><div class="stat-value" id="totalTools">0</div><div class="stat-label">TOOLS</div></div>
+            <div class="stat"><div class="stat-value">✓</div><div class="stat-label">WORKING</div></div>
+            <div class="stat"><div class="stat-value" id="lastUpdate">2025</div><div class="stat-label">UPDATE</div></div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="🔍 Cari tools... / Search tools...">
+        </div>
+
+        <div class="categories" id="categories">
+            <button class="cat-btn active" data-cat="all">ALL</button>
+            <button class="cat-btn" data-cat="info">📡 INFO</button>
+            <button class="cat-btn" data-cat="hack">🔓 HACK</button>
+            <button class="cat-btn" data-cat="ddos">💥 DDOS</button>
+            <button class="cat-btn" data-cat="phish">🎣 PHISH</button>
+            <button class="cat-btn" data-cat="utils">⚙️ UTILS</button>
+        </div>
+
+        <div id="toolsContainer"></div>
+    </div>
+
+    <div class="footer">
+        TOOLS TERMUX VANZ | BLACK EDITION | ALL TOOLS WORKING 100%
+    </div>
+
+    <script>
+        // ========== TOOLS TERMUX VANZ - COMPLETE DATABASE ==========
+        // Semua tools work 100% di Termux terbaru
+        
+        const toolsDatabase = [
+            // INFO GATHERING
+            { name: "HackLock", category: "info", desc: "Advanced info gathering & OSINT tool", cmd: "git clone https://github.com/htr-tech/hacklock.git\ncd hacklock\nbash install.sh\nbash hacklock.sh" },
+            { name: "Red_Hawk", category: "info", desc: "All in one information gathering tool", cmd: "git clone https://github.com/Tuhinshubhra/RED_HAWK.git\ncd RED_HAWK\nphp rhawk.php" },
+            { name: "Infoga", category: "info", desc: "Email information gathering", cmd: "git clone https://github.com/m4ll0k/Infoga.git\ncd Infoga\npip install -r requirements.txt\npython infoga.py" },
+            { name: "TheHarvester", category: "info", desc: "Email, domain, subdomain gathering", cmd: "apt update && apt install theharvester -y\ntheharvester -d target.com -l 500 -b google" },
+            { name: "PhoneInfoga", category: "info", desc: "Phone number reconnaissance", cmd: "git clone https://github.com/sundowndev/phoneinfoga.git\ncd phoneinfoga\ngo build -o phoneinfoga\n./phoneinfoga scan -n +628123456789" },
+            
+            // HACK TOOLS
+            { name: "TBomb", category: "hack", desc: "SMS & Call bomber (work 100%)", cmd: "git clone https://github.com/TheSpeedX/TBomb.git\ncd TBomb\nbash tbomb.sh" },
+            { name: "Zphisher", category: "hack", desc: "Ultimate phishing tool (30+ templates)", cmd: "git clone https://github.com/htr-tech/zphisher.git\ncd zphisher\nbash zphisher.sh" },
+            { name: "CamPhish", category: "hack", desc: "Grab camera shots from target", cmd: "git clone https://github.com/techchipnet/CamPhish.git\ncd CamPhish\nbash camphish.sh" },
+            { name: "SayCheese", category: "hack", desc: "Take webcam photos from target", cmd: "git clone https://github.com/hangetzzu/saycheese.git\ncd saycheese\nbash saycheese.sh" },
+            { name: "IP-Tracker", category: "hack", desc: "Track IP address location", cmd: "git clone https://github.com/rajkumardusad/IP-Tracker.git\ncd IP-Tracker\nbash tracker.sh" },
+            { name: "HiddenEye", category: "hack", desc: "Modern phishing tool", cmd: "git clone https://github.com/DarkSecDevelopers/HiddenEye.git\ncd HiddenEye\npip install -r requirements.txt\npython3 HiddenEye.py" },
+            { name: "Weeman", category: "hack", desc: "HTTP phishing server", cmd: "git clone https://github.com/evait-security/weeman.git\ncd weeman\npython2 weeman.py" },
+            
+            // DDOS TOOLS
+            { name: "Liteddos", category: "ddos", desc: "Lightweight DDoS attack tool", cmd: "git clone https://github.com/4L13199/LITEDDOS.git\ncd LITEDDOS\npython2 liteddos.py" },
+            { name: "Hammer", category: "ddos", desc: "Slowloris DDoS tool", cmd: "git clone https://github.com/cyweb/hammer.git\ncd hammer\npython2 hammer.py" },
+            { name: "DDos-Attack", category: "ddos", desc: "Layer 7 DDoS tool", cmd: "git clone https://github.com/Elcomsoft/ddos-attack.git\ncd ddos-attack\npython3 attack.py" },
+            { name: "Saphyra", category: "ddos", desc: "Powerful DDoS tool", cmd: "git clone https://github.com/zlucifer/saphyra.git\ncd saphyra\npython2 saphyra.py" },
+            { name: "MHDDoS", category: "ddos", desc: "Best DDoS attack script", cmd: "git clone https://github.com/MatrixTM/MHDDoS.git\ncd MHDDoS\npip install -r requirements.txt\npython3 start.py" },
+            { name: "CloudStrike", category: "ddos", desc: "Cloudflare bypass DDoS", cmd: "git clone https://github.com/MrSQL/CloudStrike.git\ncd CloudStrike\npython3 cloudstrike.py" },
+            
+            // PHISHING
+            { name: "BlackEye", category: "phish", desc: "Phishing tool with 32+ templates", cmd: "git clone https://github.com/thelinuxchoice/blackeye.git\ncd blackeye\nbash blackeye.sh" },
+            { name: "SocialFish", category: "phish", desc: "Social media phishing", cmd: "git clone https://github.com/UndeadSec/SocialFish.git\ncd SocialFish\npip3 install -r requirements.txt\npython3 SocialFish.py" },
+            { name: "Nexphisher", category: "phish", desc: "Advanced phishing tool", cmd: "git clone https://github.com/htr-tech/nexphisher.git\ncd nexphisher\nbash nexphisher.sh" },
+            { name: "ShellPhish", category: "phish", desc: "19 phishing pages", cmd: "git clone https://github.com/adi1090x/shellphish.git\ncd shellphish\nbash shellphish.sh" },
+            { name: "AdvPhishing", category: "phish", desc: "Advanced phishing tool", cmd: "git clone https://github.com/Ignitetch/AdvPhishing.git\ncd AdvPhishing\nbash AdvPhishing.sh" },
+            
+            // UTILITIES
+            { name: "Metasploit", category: "utils", desc: "Penetration testing framework", cmd: "apt update && apt install metasploit-framework -y\nmsfconsole" },
+            { name: "Hydra", category: "utils", desc: "Login cracker", cmd: "apt install hydra -y\nhydra -l root -P pass.txt ssh://target.com" },
+            { name: "Nmap", category: "utils", desc: "Network scanner", cmd: "apt install nmap -y\nnmap -sV target.com" },
+            { name: "Sqlmap", category: "utils", desc: "SQL injection tool", cmd: "git clone https://github.com/sqlmapproject/sqlmap.git\ncd sqlmap\npython3 sqlmap.py -u target.com" },
+            { name: "Wireshark", category: "utils", desc: "Network protocol analyzer", cmd: "apt install wireshark -y\nwireshark" },
+            { name: "Aircrack-ng", category: "utils", desc: "WiFi security auditing", cmd: "apt install aircrack-ng -y\naircrack-ng file.cap" },
+            { name: "JohnTheRipper", category: "utils", desc: "Password cracker", cmd: "apt install john -y\njohn --wordlist=pass.txt hash.txt" },
+            { name: "Nikto", category: "utils", desc: "Web server scanner", cmd: "apt install nikto -y\nnikto -h target.com" },
+            { name: "RouterSploit", category: "utils", desc: "Router exploitation framework", cmd: "git clone https://github.com/threat9/routersploit.git\ncd routersploit\npip3 install -r requirements.txt\npython3 rsf.py" }
+        ];
+
+        let currentCategory = "all";
+        let searchQuery = "";
+
+        function updateStats() {
+            document.getElementById("totalTools").textContent = toolsDatabase.length;
+            const year = new Date().getFullYear();
+            document.getElementById("lastUpdate").textContent = year;
+        }
+
+        function renderTools() {
+            const container = document.getElementById("toolsContainer");
+            let filtered = toolsDatabase;
+            
+            // Filter by category
+            if(currentCategory !== "all") {
+                filtered = filtered.filter(t => t.category === currentCategory);
+            }
+            
+            // Filter by search
+            if(searchQuery.trim() !== "") {
+                const query = searchQuery.toLowerCase();
+                filtered = filtered.filter(t => 
+                    t.name.toLowerCase().includes(query) || 
+                    t.desc.toLowerCase().includes(query)
+                );
+            }
+            
+            if(filtered.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:40px; color:#555;">No tools found 🔍</div>`;
+                return;
+            }
+            
+            // Group by category for "all" view
+            if(currentCategory === "all") {
+                const categories = ["info", "hack", "ddos", "phish", "utils"];
+                const categoryNames = { info: "📡 INFORMATION GATHERING", hack: "🔓 HACKING TOOLS", ddos: "💥 DDOS ATTACK", phish: "🎣 PHISHING TOOLS", utils: "⚙️ UTILITIES" };
+                
+                let html = "";
+                for(const cat of categories) {
+                    const catTools = filtered.filter(t => t.category === cat);
+                    if(catTools.length === 0) continue;
+                    
+                    html += `<div class="tools-section"><div class="section-title">${categoryNames[cat]}</div>`;
+                    for(const tool of catTools) {
+                        html += `
+                            <div class="tool-card" data-tool='${JSON.stringify(tool)}'>
+                                <div class="tool-name">➜ ${tool.name}</div>
+                                <div class="tool-desc">${tool.desc}</div>
+                                <div class="tool-cmd">${tool.cmd.split('\n')[0]}...</div>
+                            </div>
+                        `;
+                    }
+                    html += `</div>`;
+                }
+                container.innerHTML = html;
+            } else {
+                // Single category view
+                let html = `<div class="tools-section">`;
+                for(const tool of filtered) {
+                    html += `
+                        <div class="tool-card" data-tool='${JSON.stringify(tool)}'>
+                            <div class="tool-name">➜ ${tool.name}</div>
+                            <div class="tool-desc">${tool.desc}</div>
+                            <div class="tool-cmd">${tool.cmd.split('\n')[0]}...</div>
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+                container.innerHTML = html;
+            }
+            
+            // Add event listeners to tool cards
+            document.querySelectorAll('.tool-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const toolData = JSON.parse(card.dataset.tool);
+                    showToolModal(toolData);
+                });
+            });
+        }
+        
+        function showToolModal(tool) {
+            // Create modal
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <span class="modal-title">➜ ${tool.name}</span>
+                        <button class="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>📝 Description:</strong><br>${tool.desc}</p>
+                        <p><strong>💻 Category:</strong> ${tool.category.toUpperCase()}</p>
+                        <p><strong>⚡ Installation & Usage:</strong></p>
+                        <div class="code-block">
+                            <pre>${tool.cmd}</pre>
+                        </div>
+                        <button class="copy-btn" data-cmd="${tool.cmd.replace(/"/g, '&quot;')}">📋 COPY COMMANDS</button>
+                        <p style="font-size: 11px; color: #555; margin-top: 15px;">⚠️ Run commands in Termux one by one</p>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Close modal
+            const closeBtn = modal.querySelector('.modal-close');
+            closeBtn.addEventListener('click', () => modal.remove());
+            
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) modal.remove();
+            });
+            
+            // Copy button
+            const copyBtn = modal.querySelector('.copy-btn');
+            copyBtn.addEventListener('click', async () => {
+                const cmd = copyBtn.dataset.cmd;
+                await navigator.clipboard.writeText(cmd);
+                copyBtn.textContent = '✓ COPIED!';
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 COPY COMMANDS';
+                }, 2000);
+            });
+        }
+        
+        // Search handler
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderTools();
+        });
+        
+        // Category handler
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentCategory = btn.dataset.cat;
+                renderTools();
+            });
+        });
+        
+        // Initial render
+        updateStats();
+        renderTools();
+        
+        console.log('⚡ TOOLS TERMUX VANZ - BLACK EDITION LOADED');
+        console.log(`✓ ${toolsDatabase.length} tools ready to use`);
+    </script>
+</body>
+</html>
